@@ -1,0 +1,93 @@
+package bvdt;
+enum __NodeMode_{
+	ONE_VS_ONE = 0;
+	ONE_VS_ALL = 1;
+	ONE_VS_ALL_R = 2;
+}
+message SolverParameter{
+	required int32 nleaves = 1;
+	optional float convergence_rate = 36 [default = 0];
+	
+	required int32 nclass_label = 2;
+	required int32 nfeatures = 16;
+	required int32 nmaximum_trees = 22;
+	optional float maxz = 3 [default = 4];
+	optional float shrinkage = 11 [default = 1.];
+	required string snapshot = 18;
+	optional int32 snapshot_interval = 17 [default = 100]; 
+	optional int32 reshuffle_interval = 35 [default = 0];
+	required string train_data = 20;
+	required int32 ntrain_samples = 28;
+	optional string test_data = 21;
+	optional int32 ntest_samples = 29;
+	optional int32 display = 33 [default = 1];
+	optional bool save_accuracy = 34 [default = false];	
+
+	enum RegularizationType{
+		NO_REGULARIZATION = 0;
+		L1_REGULARIZATION = 1;
+		L2_REGULARIZATION = 2;
+		L1L2_REGULARIZATION = 3;
+	}
+	optional RegularizationType regularization_type_split = 12 [default = NO_REGULARIZATION];
+	optional float regularization_split = 13;
+	optional float regularization_ratio_split = 14;
+	
+	optional RegularizationType regularization_type_leaf = 30 [default = NO_REGULARIZATION];
+	optional float regularization_leaf = 31;
+	optional float regularization_ratio_leaf = 32;
+
+
+	required float event_sample_rate = 4 [default = 1.];
+	required float node_mode_sample_rate = 5 [default = 1.];
+	required float feature_sample_rate = 6 [default = 1.];
+	enum DirectionType{
+		FULL_SEARCH = 0;
+		ALTERNATIVE = 1;
+	}
+	required DirectionType direction_type = 15 [default = FULL_SEARCH];
+	enum LeafValueData{
+		SAMPLE_DATA = 0;
+		ALL_DATA = 1;	
+	}
+	required LeafValueData leaf_value_data = 7;
+	
+	enum NodeSplitType{
+		NEWTON = 0;
+		GRADIENT = 1;
+	}
+	required NodeSplitType node_split_type = 8;
+	required NodeSplitType leaf_value_type = 27;
+	required __NodeMode_ node_type = 9;
+	repeated float node_mode_param = 37;
+}
+message NodeParameter{
+	optional int32 tree_id = 8;
+	optional float test_accuracy = 9;
+	optional float train_accuracy = 10;
+	optional float test_loss = 11;
+	optional float train_loss = 12;
+	optional int32 nleaves = 13 ;
+	enum NodeType{
+		INTERNAL = 0;
+		LEAF = 1;
+		UNDEF = 2;
+	}
+	required NodeType node_type = 3;
+	optional float cut = 1;
+	optional int32 feature = 2 [default = 0];
+
+	optional float value = 4;
+	optional int32 mode_id = 5;
+
+	optional NodeParameter left_child = 6;
+	optional NodeParameter right_child = 7;
+}
+message TreeParameter{
+	required int32 nvariables = 1;
+	required int32 nclass_label = 2;
+        required __NodeMode_ node_type = 3;
+	required int32 nleaves = 5;
+	optional float shrinkage = 6 [default = 1.];
+	repeated NodeParameter root_nodes = 4;
+}
