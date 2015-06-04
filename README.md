@@ -29,13 +29,21 @@ To train a model:
 output:
 
 > nleaves: 8
+
 > nclass_label: 10
+
 > event_sample_rate: 1
+
 > node_mode_sample_rate: 1
+
 > ... ...
+
 > 17:05:39 ==========================
+
 > 17:05:39 Iteration: 4999 nleaves = 8
+
 > 17:05:39 Train Accuracy: 1	 Train Loss: 2.33328e-10
+
 > 17:05:39 Test Accuracy: 0.9879	 Test Loss: 0.054503
 
 
@@ -46,5 +54,7 @@ To test a model:
 output:
 
 > ... ...
+
 > testing ....
+
 > correctly classify 1387 out of 1405, accuracy = 98.7189%
