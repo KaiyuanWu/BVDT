@@ -1,0 +1,26 @@
+nleaves: 8
+nclass_label: 10
+event_sample_rate: 1
+node_mode_sample_rate: 1
+feature_sample_rate: 1
+leaf_value_data: ALL_DATA
+node_split_type: NEWTON
+node_type: ONE_VS_ALL
+shrinkage: 1
+regularization_type_split: L2_REGULARIZATION
+regularization_split: 1e-06
+direction_type: FULL_SEARCH
+nfeatures: 64
+snapshot_interval: 1000
+snapshot: "models"
+train_data: "handwritten_fold_0_train.txt"
+test_data: "handwritten_fold_0_val.txt"
+nmaximum_trees: 5000
+leaf_value_type: NEWTON
+ntrain_samples: 2810
+ntest_samples: 1405
+regularization_type_leaf: L2_REGULARIZATION
+regularization_leaf: 1e-06
+display: 200
+save_accuracy: true
+
