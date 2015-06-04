@@ -23,8 +23,59 @@ void train(string proto){
     solver.start();
 }
 
-void test(string proto, string data){
+void test(string proto, string data, string output){
+    int nfeatures, nclasses;
+    float* x;
+    int label;
+    float* result;
+    int predict_label;
+    int correct, wrong;
 
+    Application app;
+    if(!app.init(proto)){
+        cout<<"Fail init!"<<endl;
+        return;
+    }
+
+    nfeatures = app.nvariables();
+    nclasses = app.nclasses();
+
+    x = new float[nfeatures];
+    result = new float[nclasses];
+
+    ifstream infile(data.c_str(), ios::in);
+    ofstream outfile(output.c_str(), ios::out);
+
+    correct = 0;
+    wrong = 0;
+    cout<<"testing .... "<<endl;
+    while(1){
+        infile>>label;
+        for(int i=0; i<nfeatures; i++){
+            infile>>x[i];
+        }
+        if(!infile.good())
+            break;
+        predict_label = app.eval(x, result);
+        if(predict_label == label)
+            correct ++;
+        else
+            wrong ++;
+        outfile<<predict_label<<"\t";
+        for(int i=0; i<nclasses; i++){
+            outfile<<result[i]<<"\t";
+        }
+        outfile<<endl;
+
+    }
+
+    cout<<"correctly classify "<<correct<<" out of "<<correct+wrong<<", accuracy = "<<100*float(correct)/(correct+wrong)<<"%"<<endl;
+
+
+    infile.close();
+    outfile.close();
+    delete[] x;
+    delete[] result;
 }
 
 void print_help(){
@@ -38,6 +89,7 @@ void print_help(){
     cout<<"    Flags:\t"<<endl;
     cout<<"        -model (The model definition protocol buffer text file.)"<<endl;
     cout<<"        -data (input test dataset file name)"<<endl;
+    cout<<"        -out (output of prediction)"<<endl;
     exit(-1);
 }
 
@@ -45,6 +97,7 @@ int main(int argc, char *argv[]){
     string commands;
     string model;
     string data;
+    string output;
     if(argc<3){
         print_help();
     }
@@ -97,7 +150,25 @@ int main(int argc, char *argv[]){
             }
             else
                 data = data.substr(index+1, data.length()-index-1);
-            test(model, data);
+            if(argc == 5){
+                output = argv[3];
+                index = 0;
+                while(output[index]!='='){
+                    if(index<output.length()-1)
+                        index ++;
+                    else
+                        break;
+                }
+                if(output[index]!='='){
+                    print_help();
+                }
+                else
+                    output = output.substr(index+1, output.length()-index-1);
+            }
+            else{
+                output = "output.txt";
+            }
+            test(model, data, output);
         }
         else
             print_help();

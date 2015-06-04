@@ -489,7 +489,6 @@ void Tree::build_tree(){
         cout<<"This leaf value type has not been implemented!"<<endl;
         exit(-1);
     }
-    _root_node->printInfo("", false);
     //save parameter
     NodeParameter* node_parameter = _tree_parameter.add_root_nodes();
     node_parameter->set_tree_id(_tree_id);

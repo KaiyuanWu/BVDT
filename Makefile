@@ -1,13 +1,13 @@
-SRC:=$(wildcard *.cpp)
+SRC:=$(wildcard src/bvdt/*.cpp)
 OBJ:=$(patsubst %.cpp,%.o,$(SRC))
 CXX:=g++
-bvdt:$(OBJ) algo.pb.o
-	$(CXX)  -o main $(OBJ) algo.pb.o -L/usr/local/lib/  -lprotobuf 
-.cpp.o:$<
-	$(CXX)  -c $< -o $@
+bvdt: algo.pb.o $(OBJ)
+	$(CXX)  -o bvdt $(OBJ) src/proto/algo.pb.o -L/usr/local/lib/  -lprotobuf 
 algo.pb.o:algo.pb.cc
-	$(CXX) -c $< -o $@
-algo.pb.cc:algo.proto
-	protoc --cpp_out=. algo.proto
+	$(CXX) -c src/proto/algo.pb.cc -o src/proto/$@
+algo.pb.cc:src/proto/algo.proto
+	protoc --cpp_out=. $<
+.cpp.o:$<
+	$(CXX)  -Iincludes/ -Isrc/proto/ -c $< -o $@
 clean:
-	rm -fr $(OBJ) main algo.pb.*
+	rm -fr $(OBJ) bvdt src/proto/algo.pb.* *.o
