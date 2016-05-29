@@ -1,5 +1,6 @@
-DLIB_DIR:=/Users/kaiwu/Documents/veryes/FaceAlignments/dlib-18.18/
-OOQP_DIR:=/Users/kaiwu/Documents/logitBoost/Draft_Regularization_Shrinkage/src/OOQP-0.99.26_2/
+#Set DLIB_DIR and OOQP_DIR to your dlib and OOQP package locations
+DLIB_DIR:=
+OOQP_DIR:=
 
 OOQP_INC:=$(OOQP_DIR)/include
 OOQP_LIB:=$(OOQP_DIR)/lib/libooqpbase.a $(OOQP_DIR)/lib/libooqpbound.a $(OOQP_DIR)/lib/libooqpdense.a $(OOQP_DIR)/lib/libooqpgendense.a $(OOQP_DIR)/lib/libooqpgondzio.a 

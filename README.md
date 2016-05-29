@@ -68,7 +68,7 @@ output:
 
 To test a model:
 
-> ../bvdt  test -model=handwritten_fold_0.proto data=handwritten_fold_0_val.txt
+> ../bvdt  test -model=handwritten_fold_0.proto data=handwritten_fold_0_test.txt
 
 output:
 
@@ -76,4 +76,4 @@ output:
 
 > testing ....
 
-> correctly classify 1388 out of 1405, accuracy = 98.79%
+> correctly classify 1387 out of 1405, accuracy = 98.7189%
