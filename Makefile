@@ -4,7 +4,7 @@ CXX:=g++
 bvdt: algo.pb.o $(OBJ)
 	$(CXX)  -o bvdt $(OBJ) src/proto/algo.pb.o -L/usr/local/lib/  -lprotobuf 
 algo.pb.o:algo.pb.cc
-	$(CXX) -c src/proto/algo.pb.cc -o src/proto/$@
+	$(CXX) -I. -c src/proto/algo.pb.cc -o src/proto/$@
 algo.pb.cc:src/proto/algo.proto
 	protoc --cpp_out=. $<
 .cpp.o:$<

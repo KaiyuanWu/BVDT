@@ -16,7 +16,18 @@ Prequisites
 
 protobuf is used to easily configure the program and store the output model file. See https://developers.google.com/protocol-buffers/docs/tutorials for tutorials of protobuf. The parameters of this program are specified in [src/proto/algo.proto].
 
+     - Dlib
+
+Dlib is a modern C++ toolkit containing machine learning algorithms and tools for creating complex software in C++ to solve real world problems. See http://dlib.net for more informations. We use the ''solve_trust_region_subproblem'' to solve the trust region subproblem of the L2-BVDT algorithm.
+
+     - Object-Oriented Software for Quadratic Programming (OOQP)
+
+OOQP is an object-oriented C++ package, based on a primal-dual interior-point method, for solving convex quadratic programming problems (QPs). See http://pages.cs.wisc.edu/~swright/ooqp/ for more detations. We use the OOQP package to solve the quardratic optimization subproblem of the L1-BVDT algorithm. 
+ 
+
 To compile the program, type "make" in the source root directory. The main excutable program is named by "bvdt".
+
+
 
 Demonstration
 ============
