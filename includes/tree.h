@@ -12,6 +12,8 @@
 #include "nodemode_one_vs_all_r.h"
 #include "data.h"
 #include "fcntl.h"
+#include "l1solver.h"
+#include "l2solver.h"
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -23,9 +25,10 @@ public:
     Tree();
     void build_tree();
     void update_data();
-    void init_tree(Data* data,
+    void init_tree(BVDT_Data* data,
                    NodeGain* node_gain_split, NodeGain* node_gain_leaf, SolverParameter *solver_parameter);
     void write_tree_parameter(const string output_file_name);
+    void save_tree_parameter();
     void reshuffle();
     void adjust_nleaves(int delta);
     int  nleaves_1();
@@ -34,7 +37,7 @@ private:
     NodeGain* _node_gain_split;
     NodeGain* _node_gain_leaf;
     vector<NodeMode*> _node_modes;
-    Data* _data;
+    BVDT_Data* _data;
     Node* _root_node;
     vector<Node*> _node_array;
     int _node_allocation_index;
@@ -70,6 +73,8 @@ private:
     inline void find_best_mode(Node* node, NodeMode* nodemode, NodeGain *nodegain);
     inline void calculate_node(Node* node, NodeMode* nodemode, NodeGain *nodegain, int imode);
     inline void init_node(Node* node, int left, int right, int imode);
+
+
     void build_tree_full_search();
     void build_tree_alternative();
 
@@ -77,6 +82,16 @@ private:
     void split_node_alternative(Node* node);
 
     void calculate_leaf_value_all_data();
+
+private:
+    void refit_leaf_values_l1();
+    void refit_leaf_values_l2();
+    double* _H;
+    double* _g;
+    double* _val;
+    L1Solver* _l1solver;
+    L2Solver* _l2solver;
+    SolverParameter::RefitType _refit_type;
 };
 
 #endif // TREE_H

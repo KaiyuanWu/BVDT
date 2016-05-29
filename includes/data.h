@@ -13,12 +13,12 @@
 #define SQ(x) x*x
 
 using namespace std;
-class Data
+class BVDT_Data
 {
 public:
-    Data();
-    Data(int nfeatures, int ntrain_samples,  int nclasses,int ntest_samples=0);
-    ~Data();
+    BVDT_Data();
+    BVDT_Data(int nfeatures, int ntrain_samples,  int nclasses,int ntest_samples=0);
+    ~BVDT_Data();
     void init(int nfeatures, int ntrain_samples, int nclasses, int effective_data_number, int effective_feature_number, int ntest_samples = 0);
 
 

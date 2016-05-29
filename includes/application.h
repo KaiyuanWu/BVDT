@@ -25,6 +25,7 @@ public:
     int eval(const float *x, int *rlabel);
     float accuracy(const float* x, int* label, int nsamples, int *rlabel=NULL);
     float accuracy(const float* x, int* label, int nsamples, const char* outfile_prefix);
+    void test_train_accuracy(float& test_acc, float& train_acc, int iter);
     const SolverParameter* solver_parameter();
     int nvariables();
     int nclasses();

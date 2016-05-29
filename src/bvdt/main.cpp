@@ -17,8 +17,7 @@
 
 using namespace std;
 void train(string proto){
-//    string proto = "/Users/kaiwu/BVDT_BoostedVectorDecisionTree/check_speration/circle_data.proto";
-    Solver solver(proto);
+    BVDT_Solver solver(proto);
     solver.init();
     solver.start();
 }

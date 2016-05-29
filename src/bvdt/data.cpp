@@ -1,7 +1,7 @@
 #include "data.h"
 #include "math.h"
 
-Data::Data():_train_data(NULL), _test_data(NULL), _train_labels(NULL), _test_labels(NULL),
+BVDT_Data::BVDT_Data():_train_data(NULL), _test_data(NULL), _train_labels(NULL), _test_labels(NULL),
     _train_f(NULL), _test_f(NULL), _train_p(NULL), _test_p(NULL),  _data_order_0(NULL),
     _data_reverse_order_0(NULL), _data_order(NULL), _data_reverse_order(NULL), _data_order_flag(NULL),
     _data_reverse_order_temp(NULL),
@@ -9,7 +9,7 @@ Data::Data():_train_data(NULL), _test_data(NULL), _train_labels(NULL), _test_lab
 {
 }
 
-Data::Data(int nfeatures, int ntrain_samples, int nclasses, int ntest_samples):_train_data(NULL), _test_data(NULL), _train_labels(NULL), _test_labels(NULL),
+BVDT_Data::BVDT_Data(int nfeatures, int ntrain_samples, int nclasses, int ntest_samples):_train_data(NULL), _test_data(NULL), _train_labels(NULL), _test_labels(NULL),
 _train_f(NULL), _test_f(NULL), _train_p(NULL), _test_p(NULL),  _data_order_0(NULL),
 _data_reverse_order_0(NULL), _data_order(NULL), _data_reverse_order(NULL), _data_order_flag(NULL),
   _data_reverse_order_temp(NULL),
@@ -25,7 +25,7 @@ _data_reverse_order_0(NULL), _data_order(NULL), _data_reverse_order(NULL), _data
     allocate_data_space();
 }
 
-void Data::read_uci_data(string train_data_file){
+void BVDT_Data::read_uci_data(string train_data_file){
     ifstream infile(train_data_file.c_str(), ios::in);
     if(!infile.good()){
         cout<<"Can not open "<<train_data_file<<endl;
@@ -47,7 +47,7 @@ void Data::read_uci_data(string train_data_file){
     infile.close();
 }
 
-void Data::read_uci_data(string train_data_file, string test_data_file){
+void BVDT_Data::read_uci_data(string train_data_file, string test_data_file){
     if(!_has_test_data){
         cout<<"Not support test data! Please clearify the solver setting!"<<endl;
         exit(-1);
@@ -93,7 +93,7 @@ void Data::read_uci_data(string train_data_file, string test_data_file){
     infile2.close();
 }
 
-void Data::init(int nfeatures, int ntrain_samples, int nclasses, int effective_data_number, int effective_feature_number, int ntest_samples){
+void BVDT_Data::init(int nfeatures, int ntrain_samples, int nclasses, int effective_data_number, int effective_feature_number, int ntest_samples){
     _nfeatures = nfeatures;
     _ntrain_samples = ntrain_samples;
     _ntest_samples = ntest_samples;
@@ -109,7 +109,7 @@ void Data::init(int nfeatures, int ntrain_samples, int nclasses, int effective_d
     reset_data();
     allocate_data_space();
 }
-void Data::allocate_data_space(){
+void BVDT_Data::allocate_data_space(){
     _train_data = new float[_nfeatures*_ntrain_samples];
     _train_labels = new int[_ntrain_samples];
     _train_f = new float[_nclasses*_ntrain_samples];
@@ -173,11 +173,11 @@ void Data::allocate_data_space(){
         _data_reverse_order[i] = new int[_effective_data_number];
     }
 }
-Data::~Data(){
+BVDT_Data::~BVDT_Data(){
     reset_data();
 }
 
-void Data::reset_data(){
+void BVDT_Data::reset_data(){
     if(_train_data) delete[] _train_data;
     if(_test_data)  delete[] _test_data;
     if(_train_labels) delete[] _train_labels;
@@ -221,7 +221,7 @@ void Data::reset_data(){
     }
 }
 
-void Data::preinit_data_order(){
+void BVDT_Data::preinit_data_order(){
     vector<pair<float,int> > temp;
     temp.resize(_ntrain_samples);
     for(int i=0; i<_nfeatures; i++){
@@ -229,7 +229,7 @@ void Data::preinit_data_order(){
             temp[j].first = _train_data[j*_nfeatures + i];
             temp[j].second = j;
         }
-        sort(temp.begin(), temp.end(), Data::compair);
+        sort(temp.begin(), temp.end(), BVDT_Data::compair);
         for(int j=0; j<_ntrain_samples; j++){
             _data_order_0[i][temp[j].second] = j;
             _data_reverse_order_0[i][j] = temp[j].second;
@@ -242,7 +242,7 @@ void Data::preinit_data_order(){
 //    cout<<"After sort: "<<endl;
 //    print_data();
 }
-void Data::print_data(){
+void BVDT_Data::print_data(){
     for(int i=0; i<_ntrain_samples; i++){
         cout<<_train_labels[i]<<":";
         for(int j=0; j<_nfeatures; j++){
@@ -252,7 +252,7 @@ void Data::print_data(){
     }
 }
 
-void Data::print_classifier(int nbins){
+void BVDT_Data::print_classifier(int nbins){
     cout<<"Train:\t"<<endl;
     for(int i=0; i<_ntrain_samples; i+=nbins){
         cout<<i<<"("<<_train_labels[i]<<"):\t";
@@ -273,7 +273,7 @@ void Data::print_classifier(int nbins){
     }
 }
 
-void Data::init_data_order(vector<int> &effective_data, vector<int> &effective_feature){
+void BVDT_Data::init_data_order(vector<int> &effective_data, vector<int> &effective_feature){
     _effective_feature_number = effective_feature.size();
     _effective_data_number = effective_data.size();
     _effective_data = &(effective_data);
@@ -292,7 +292,7 @@ void Data::init_data_order(vector<int> &effective_data, vector<int> &effective_f
         }
     }
 }
-void Data::rearrange(int left_index, int right_index, int cut, int feature_index){
+void BVDT_Data::rearrange(int left_index, int right_index, int cut, int feature_index){
 //    cout<<"before rearrange ... "<<endl;
 //    //before rearrange ...
 //    for(int i=0; i<_effective_feature_number; i++){
@@ -346,87 +346,87 @@ void Data::rearrange(int left_index, int right_index, int cut, int feature_index
 //    cout<<"======================================"<<endl;
 }
 
-const float* Data::train_data(int index){
+const float* BVDT_Data::train_data(int index){
     return _train_data+index*_nfeatures;
 }
 
-int Data::train_label(int index){
+int BVDT_Data::train_label(int index){
     return _train_labels[index];
 }
 
-const float* Data::test_data(int index){
+const float* BVDT_Data::test_data(int index){
     return _test_data+index*_nfeatures;
 }
 
-int Data::test_label(int index){
+int BVDT_Data::test_label(int index){
     return _test_labels[index];
 }
 
-const float* Data::train_f(int index){
+const float* BVDT_Data::train_f(int index){
     return _train_f+index*_nclasses;
 }
 
-const float* Data::test_f(int index){
+const float* BVDT_Data::test_f(int index){
     return _test_f+index*_nclasses;
 }
 
-const float* Data::train_p(int index){
+const float* BVDT_Data::train_p(int index){
     return _train_p+index*_nclasses;
 }
 
-const float* Data::test_p(int index){
+const float* BVDT_Data::test_p(int index){
     return _test_p+index*_nclasses;
 }
 
-const float* Data::train_p_d(int index){
+const float* BVDT_Data::train_p_d(int index){
     return _train_p_d+index*_nclasses;
 }
 
-const float* Data::test_p_d(int index){
+const float* BVDT_Data::test_p_d(int index){
     return _test_p_d+index*_nclasses;
 }
 
-float Data::train_loss(){
+float BVDT_Data::train_loss(){
     return _train_loss;
 }
 
-float Data::test_loss(){
+float BVDT_Data::test_loss(){
     return _test_loss;
 }
 
-float Data::train_accuracy(){
+float BVDT_Data::train_accuracy(){
     return _train_accuracy;
 }
 
-float Data::test_accuracy(){
+float BVDT_Data::test_accuracy(){
     return _test_accuracy;
 }
 
-float Data::train_loss0(){
+float BVDT_Data::train_loss0(){
     return _train_loss0;
 }
 
-float Data::test_loss0(){
+float BVDT_Data::test_loss0(){
     return _test_loss0;
 }
 
-float Data::train_accuracy0(){
+float BVDT_Data::train_accuracy0(){
     return _train_accuracy0;
 }
 
-float Data::test_accuracy0(){
+float BVDT_Data::test_accuracy0(){
     return _test_accuracy0;
 }
 
-int Data::data_order(int index, int ifeature){
+int BVDT_Data::data_order(int index, int ifeature){
     return _data_order[ifeature][index];
 }
 
-int Data::data_reverse_order(int index, int ifeature){
+int BVDT_Data::data_reverse_order(int index, int ifeature){
     return _data_reverse_order[ifeature][index];
 }
 
-void Data::update_train_f(const float* delta_f, float step, int index, bool dist){
+void BVDT_Data::update_train_f(const float* delta_f, float step, int index, bool dist){
     float maxf=0.;
     float sum_exp = 0.;
     index *= _nclasses;
@@ -455,7 +455,7 @@ void Data::update_train_f(const float* delta_f, float step, int index, bool dist
     }
 }
 
-void Data::update_test_f(const float* delta_f, float step, int index, bool dist){
+void BVDT_Data::update_test_f(const float* delta_f, float step, int index, bool dist){
     float maxf=0.;
     float sum_exp = 0.;
     index *= _nclasses;
@@ -482,7 +482,7 @@ void Data::update_test_f(const float* delta_f, float step, int index, bool dist)
     }
 }
 
-void Data::update_performance(){
+void BVDT_Data::update_performance(){
 //    //DEBUG
 //    cout<<"Data update_performance"<<endl;
 

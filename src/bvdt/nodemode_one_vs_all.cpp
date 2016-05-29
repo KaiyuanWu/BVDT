@@ -39,7 +39,7 @@ void NodeMode_One_Vs_All::reset(){
 
 void NodeMode_One_Vs_All::reset(int mode_id){
     _g[mode_id] = 0.;
-    _h[mode_id];
+    _h[mode_id] = 0.;
     _nsamples = 0;
 }
 

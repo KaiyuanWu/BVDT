@@ -1,6 +1,6 @@
 #include "solver.h"
 using namespace google::protobuf::io;
-Solver::Solver(string solver_proto)
+BVDT_Solver::BVDT_Solver(string solver_proto)
 {
     _solver_proto = solver_proto;
     int input_fd = open(_solver_proto.c_str(), O_RDONLY);
@@ -16,9 +16,9 @@ Solver::Solver(string solver_proto)
     close(input_fd);
 }
 
-void Solver::init(){
+void BVDT_Solver::init(){
     //init data
-    _data = new Data();
+    _data = new BVDT_Data();
     _data->init(_solver_parameter.nfeatures(),_solver_parameter.ntrain_samples(),_solver_parameter.nclass_label(),_solver_parameter.ntrain_samples()*_solver_parameter.event_sample_rate()<1?1:_solver_parameter.ntrain_samples()*_solver_parameter.event_sample_rate(),
                 _solver_parameter.nfeatures()*_solver_parameter.feature_sample_rate()<1?1:_solver_parameter.nfeatures()*_solver_parameter.feature_sample_rate(), _solver_parameter.ntest_samples());
     if(_solver_parameter.has_test_data())
@@ -119,12 +119,13 @@ void Solver::init(){
 //    }
 }
 
-void Solver::start(){
+void BVDT_Solver::start(){
     int i=0;
     for(i=0; i<_solver_parameter.nmaximum_trees(); i++){
         _tree->build_tree();
         _tree->update_data();
         _data->update_performance();
+        _tree->save_tree_parameter();
         if(i%_solver_parameter.display() == _solver_parameter.display() - 1){
             LOG<<"=========================="<<endl;
             LOG<<"Iteration: "<<i<<" nleaves = "<<_tree->nleaves_1()<<endl;

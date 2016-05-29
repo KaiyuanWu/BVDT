@@ -19,16 +19,16 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "log.h"
 
-class Solver
+class BVDT_Solver
 {
 public:
-    Solver(string solver_proto);
+    BVDT_Solver(string solver_proto);
     void init();
     void start();
 private:
     NodeGain* _node_gain_split;
     NodeGain* _node_gain_leaf;
-    Data* _data;
+    BVDT_Data* _data;
     Tree* _tree;
     float _convergence_rate;
     bool  _has_convergence_rate;

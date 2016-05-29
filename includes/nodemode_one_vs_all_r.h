@@ -6,7 +6,8 @@ class NodeMode_One_Vs_All_R : public NodeMode
 public:
     NodeMode_One_Vs_All_R(int nclass, bvdt::__NodeMode_ __node_mode_, float* param=NULL);
     ~NodeMode_One_Vs_All_R();
-    void node_mode(float& gradient, float& hessian, const float* f, int label, int mode_id);
+    void node_mode(float& gradient, float& hessian, const float* f,  int label, int mode_id);
+    void node_mode(float& gradient, float& hessian,  int label, int mode_id);
     int node_mode(float &gradient, float &hessian, int mode_id);
     void node_mode_value(float* value, int node_mode_id);
     void increment_all_node_mode(const float* f, int label);
@@ -20,9 +21,12 @@ public:
     void reset(int mode_id);
     void copy_mode(NodeMode *nodemode, int mode_id);
     void copy_all_mode(NodeMode *nodemode);
+    inline void calc_expf(const float* f);
     void print();
 private:
     float _r;
+    float* _expf;
+    float _sum_expf;
     float* _g;
     float* _h;
     float* _dump_node_value;

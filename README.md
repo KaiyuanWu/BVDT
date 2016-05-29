@@ -12,6 +12,7 @@ Installation
 <a name="install"/>
 
 Prequisites
+
      - Google Protocol Buffers
 
 protobuf is used to easily configure the program and store the output model file. See https://developers.google.com/protocol-buffers/docs/tutorials for tutorials of protobuf. The parameters of this program are specified in [src/proto/algo.proto].
@@ -25,7 +26,7 @@ Dlib is a modern C++ toolkit containing machine learning algorithms and tools fo
 OOQP is an object-oriented C++ package, based on a primal-dual interior-point method, for solving convex quadratic programming problems (QPs). See http://pages.cs.wisc.edu/~swright/ooqp/ for more detations. We use the OOQP package to solve the quardratic optimization subproblem of the L1-BVDT algorithm. 
  
 
-To compile the program, type "make" in the source root directory. The main excutable program is named by "bvdt".
+To compile the program, first edit the Makefile: modify the DLIB_DIR and OOQP_DIR to your dlib and OOQP package locations; make sure the EXTRA_LDFLAG correct. Then type "make" in the source root directory. The main excutable program is named by "bvdt".
 
 
 
@@ -43,20 +44,27 @@ output:
 
 > nclass_label: 10
 
-> event_sample_rate: 1
+> maxz: 0.1
 
-> node_mode_sample_rate: 1
+> shrinkage: 1
 
 > ... ...
 
-> 17:05:39 ==========================
+> 14:56:12 ==========================
 
-> 17:05:39 Iteration: 4999 nleaves = 8
+> 14:56:12 Iteration: 19 nleaves = 8
 
-> 17:05:39 Train Accuracy: 1	 Train Loss: 2.33328e-10
+> 14:56:12 Train Accuracy: 0.697509	 Train Loss: 1.96437
 
-> 17:05:39 Test Accuracy: 0.9879	 Test Loss: 0.054503
+> 14:56:12 Test Accuracy: 0.684698	 Test Loss: 1.97507
 
+> ... ...
+
+> 15:13:28 Iteration: 4999 nleaves = 8
+
+> 15:13:28 Train Accuracy: 1	 Train Loss: 8.69676e-10
+
+> 15:13:28 Test Accuracy: 0.9879	 Test Loss: 0.0572106
 
 To test a model:
 
@@ -68,4 +76,4 @@ output:
 
 > testing ....
 
-> correctly classify 1387 out of 1405, accuracy = 98.7189%
+> correctly classify 1388 out of 1405, accuracy = 98.79%

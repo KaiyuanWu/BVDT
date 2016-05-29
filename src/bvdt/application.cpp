@@ -30,6 +30,15 @@ bool Application::init(const string& solver_proto){
     return init(_solver_parameter.snapshot (), _solver_parameter.snapshot_interval (), _solver_parameter.nmaximum_trees ());
 }
 
+void Application::test_train_accuracy(float& test_acc, float& train_acc, int iter){
+        if(iter >= _maximum_iterations)
+                iter = _maximum_iterations-1;
+        const NodeParameter* node = &(_tree.root_nodes(iter));
+        test_acc = node->test_accuracy();
+        train_acc = node->train_accuracy();
+}
+
+
 bool Application::init(const string &snapshot, int interval, int maximum_iterations){
     bool ret = true;
     _snapshot = snapshot;

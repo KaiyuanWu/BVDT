@@ -5,7 +5,7 @@ Tree::Tree(){
 
 }
 
-void Tree::init_tree(Data* data,
+void Tree::init_tree(BVDT_Data *data,
                      NodeGain* node_gain_split, NodeGain* node_gain_leaf, SolverParameter* solver_parameter){
     _data = data;
     _node_gain_split = node_gain_split;
@@ -94,7 +94,94 @@ void Tree::init_tree(Data* data,
     _tree_parameter.set_shrinkage (_shrinkage);
     _tree_parameter.clear_root_nodes();
     _delta_f = new float[_data->_nclasses];
+
+    _H = new double[_nleaves];
+    _g = new double[_nleaves];
+    _val = new double[_nleaves];
+    _l1solver = new L1Solver(_nleaves, solver_parameter->maxz());
+    _l2solver = new L2Solver(_nleaves, solver_parameter->maxz());
+
+    _refit_type = solver_parameter->refit_type();
 }
+
+void Tree::refit_leaf_values_l1(){
+    Node* pnode = _root_node;
+    int index = 0;
+    float gradient, hessian;
+    vector<Node*> stack(_nleaves+1);
+    vector<Node*> leaf_stack(_nleaves);
+    stack[0]=_root_node;
+    int point = 1;
+    while(point>0){
+        pnode = stack[point-1];
+        point --;
+        if(pnode->_node_type ==NodeParameter::LEAF){
+            pnode->_nodemode->node_mode(gradient, hessian, pnode->_mode_id);
+            _H[index] = hessian;
+            _g[index] = gradient;
+            leaf_stack[index] = pnode;
+            index++;
+        }
+        else{
+            stack[point] = pnode->_left_child;
+            point ++;
+            stack[point] = pnode->_right_child;
+            point ++;
+        }
+    }
+    double obj;
+    for(int i = index; i < _nleaves; i++){
+        _H[i] =1;
+        _g[i] = 0;
+    }
+    _l1solver->solve(_H,_g, obj, _val);
+    for(int i=0; i<index; i++){
+//        cout<<leaf_stack[i]->_value<<",\t"<<_val[i]<<endl;
+        leaf_stack[i]->_value = _val[i];
+    }
+}
+
+void Tree::refit_leaf_values_l2(){
+    Node* pnode = _root_node;
+    int index = 0;
+    float gradient, hessian;
+    vector<Node*> stack(_nleaves+1);
+    vector<Node*> leaf_stack(_nleaves);
+    stack[0]=_root_node;
+    int point = 1;
+    while(point>0){
+        pnode = stack[point-1];
+        point --;
+        if(pnode->_node_type ==NodeParameter::LEAF){
+            pnode->_nodemode->node_mode(gradient, hessian, pnode->_mode_id);
+            _H[index] = hessian;
+            _g[index] = gradient;
+            leaf_stack[index] = pnode;
+            index++;
+        }
+        else{
+            stack[point] = pnode->_left_child;
+            point ++;
+            stack[point] = pnode->_right_child;
+            point ++;
+        }
+    }
+    if(index>_nleaves){
+        cout<<"here here"<<endl;
+    }
+    for(int i = index; i < _nleaves; i++){
+        _H[i] =1;
+        _g[i] = 0;
+    }
+    _l2solver->solve(_H,_g, _val);
+    for(int i=0; i<index; i++){
+        leaf_stack[i]->_value = _val[i];
+    }
+//    for(int i=0; i<_nleaves; i++)
+//         cout<<_val[i]<<endl;
+//    exit(0);
+}
+
 
 int Tree::nleaves_1 (){
     return _nleaves_1;
@@ -489,6 +576,14 @@ void Tree::build_tree(){
         cout<<"This leaf value type has not been implemented!"<<endl;
         exit(-1);
     }
+    //Refit the leaf values
+    if(_refit_type == SolverParameter_RefitType_L1)
+        refit_leaf_values_l1();
+    else if(_refit_type == SolverParameter_RefitType_L2)
+        refit_leaf_values_l2();
+}
+
+void Tree::save_tree_parameter(){
     //save parameter
     NodeParameter* node_parameter = _tree_parameter.add_root_nodes();
     node_parameter->set_tree_id(_tree_id);
@@ -502,6 +597,7 @@ void Tree::build_tree(){
             node_parameter->set_test_loss (_data->test_loss ());
         }
     }
+
     _root_node->fill_node_parameter(node_parameter, _tree_id);
 }
 
@@ -510,12 +606,13 @@ void Tree::write_tree_parameter(const string output_file_name){
 //    cout<<"Tree write_tree_parameter"<<endl;
 
     FILE* fin = fopen(output_file_name.c_str(), "r");
-    if(!fin){
+    if(fin){
         fclose(fin);
         string cmd = "rm -fr ";
         cmd += output_file_name;
         system(cmd.c_str());
     }
+
 
     int output_fd = open(output_file_name.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if(output_fd == -1){
